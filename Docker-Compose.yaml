@@ -9,8 +9,8 @@ services:
     hostname: zookeeper
     container_name: zookeeper
     environment:
-      # `ZOOKEEPER_CLIENT_PORT` Instructs ZooKeeper on which port to use to listen for connections from
-      # clients.
+      # `ZOOKEEPER_CLIENT_PORT` Instructs ZooKeeper on which port to use to
+      # listen for connections from clients.
       ZOOKEEPER_CLIENT_PORT: 2181
       # `ZOOKEEPER_TICK_TIME` is a configuration parameter that determines the
       # length of a ZooKeeper tick in milliseconds. The tick is a basic time
@@ -104,7 +104,19 @@ services:
       CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
       CONNECT_REST_ADVERTISED_HOST_NAME: "kafka-connect"
+      # Sets the log output format for Kafka Connect logs using Log4j.
+      # %d = date/time of the log event
+      # %p = log level (INFO, ERROR, etc.)
+      # %X{connector.context} = connector context information (if available)
+      # %m = log message
+      # %c = logger name (class or category)
+      # %L = line number in the source code
+      # %n = new line
+      # This pattern makes logs more readable and helps with debugging by including useful context for each log entry.
       CONNECT_LOG4J_APPENDER_STDOUT_LAYOUT_CONVERSIONPATTERN: "[%d] %p %X{connector.context}%m (%c:%L)%n"
+      # A replication factor value of "1" means the topic will have only one 
+      # replica (no redundancy), which is typical for single-node Kafka setups.
+      # In production, you would use a higher value for fault tolerance.
       CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: "1"
       CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: "1"
       CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: "1"
@@ -228,18 +240,6 @@ services:
 # Be patient and wait for the server to display "ready for connections" in the
 # logs. There should be a total of 4 "ready for connections" messages in the
 # logs.
-
-  # mysql:
-  #   image: mysql:8.0.35
-  #   hostname: mysql
-  #   container_name: mysql
-  #   ports:
-  #     - 33006:3306
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: 5trathm0re
-  #   volumes:
-  #     - ./mysql/sample-data:/docker-entrypoint-initdb.d/
-  #     - ./mysql/var-lib-mysql:/var/lib/mysql
 
   mysql:
     image: mysql:8.0.35
